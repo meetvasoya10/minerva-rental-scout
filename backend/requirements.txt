@@ -4,3 +4,4 @@ playwright
 websockets
 anthropic
 python-dotenv
+requests
