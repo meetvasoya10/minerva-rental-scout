@@ -1,6 +1,6 @@
 fastapi
 uvicorn
-playwright
+playwright==1.62.0
 websockets
 anthropic
 python-dotenv
