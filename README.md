@@ -82,4 +82,3 @@ The application is split into a Python backend and a React frontend, communicati
 5. Open your browser to `http://localhost:3000` to interact with the scout.
 
 ---
-*Note: This project was built as a submission for a YC-backed company's engineering challenge.*
