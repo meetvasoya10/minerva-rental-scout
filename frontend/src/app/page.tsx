@@ -621,6 +621,7 @@ function AmenityGroupCard({ group }: { group: AmenityGroup }) {
 }
 
 export default function HomeView() {
+  const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8006/ws/agent';
   const {
     appState,
     isConnected,
@@ -633,7 +634,7 @@ export default function HomeView() {
     startAgent,
     abortAgent,
     sendHumanResponse,
-  } = useAgent('ws://localhost:8006/ws/agent');
+  } = useAgent(wsUrl);
 
   const [goal, setGoal] = useState('Find me a 2BR under $3000/month in Huston, TX');
   const [userReply, setUserReply] = useState('');
