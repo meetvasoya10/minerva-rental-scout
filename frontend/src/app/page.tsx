@@ -712,24 +712,26 @@ export default function HomeView() {
 
         {/* ── SEARCH INPUT ── */}
         <div className="max-w-3xl w-full mx-auto">
-          <form onSubmit={handleStart} className="relative group">
-            <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-neutral-400">
-              <Search className="w-5 h-5 stroke-[2]" />
+          <form onSubmit={handleStart} className="relative group flex flex-col md:block">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-neutral-400">
+                <Search className="w-5 h-5 stroke-[2]" />
+              </div>
+              <input
+                id="main-search-input"
+                type="text"
+                className="w-full pl-14 pr-6 md:pr-36 py-5 bg-white dark:bg-[#111] border border-neutral-200 dark:border-neutral-800 rounded-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.04)] focus:outline-none focus:ring-2 focus:ring-emerald-600/30 focus:border-emerald-600 transition-all text-lg placeholder:text-neutral-400 disabled:opacity-60 disabled:bg-neutral-50 dark:disabled:bg-neutral-900/50"
+                placeholder="Find me a 2BR under $2000/month in Huston, TX"
+                value={goal}
+                onChange={(e) => setGoal(e.target.value)}
+                disabled={isInputDisabled}
+              />
             </div>
-            <input
-              id="main-search-input"
-              type="text"
-              className="w-full pl-14 pr-36 py-5 bg-white dark:bg-[#111] border border-neutral-200 dark:border-neutral-800 rounded-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.04)] focus:outline-none focus:ring-2 focus:ring-emerald-600/30 focus:border-emerald-600 transition-all text-lg placeholder:text-neutral-400 disabled:opacity-60 disabled:bg-neutral-50 dark:disabled:bg-neutral-900/50"
-              placeholder="Find me a 2BR under $2000/month in Huston, TX"
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-              disabled={isInputDisabled}
-            />
             <button
               id="start-agent-btn"
               type="submit"
               disabled={isInputDisabled || !goal.trim()}
-              className="absolute right-3 top-3 bottom-3 px-8 bg-emerald-700 dark:bg-emerald-600 text-white rounded-[14px] font-medium hover:bg-emerald-800 dark:hover:bg-emerald-700 transition-colors flex items-center gap-2 disabled:opacity-40 shadow-sm"
+              className="mt-3 md:mt-0 w-full md:w-auto md:absolute md:right-3 md:top-3 md:bottom-3 py-4 md:py-0 px-8 bg-emerald-700 dark:bg-emerald-600 text-white rounded-[14px] font-medium hover:bg-emerald-800 dark:hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-40 shadow-sm"
             >
               {isInputDisabled ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
               Start
