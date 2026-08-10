@@ -679,6 +679,12 @@ export default function HomeView() {
 
   const isInputDisabled = appState === 'STARTING' || appState === 'RUNNING' || appState === 'PAUSED';
 
+  // Detect if the agent has finished browsing and entered the synthesis/compiling phase
+  const isCompiling = (appState === 'RUNNING' || appState === 'COMPLETED') && events.some(e => 
+    e.type === 'action' && typeof e.payload === 'string' && 
+    (e.payload.startsWith('Tool call: get_nearby_amenities') || e.payload.startsWith('Tool call: submit_comparison'))
+  );
+
   return (
     <main className="min-h-screen bg-background text-foreground flex flex-col pt-6 pb-24 px-6 md:px-12 w-full max-w-[1800px] mx-auto font-sans">
       
@@ -749,7 +755,11 @@ export default function HomeView() {
       </header>
 
       {/* ── MAIN TWO-COLUMN PANELS ── */}
-      <div className={`grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 ${appState === 'COMPLETED' && finalResult ? 'lg:h-[360px] min-h-[280px]' : 'lg:h-[640px] min-h-[320px]'}`}>
+      <div className={`grid grid-cols-1 gap-8 transition-all duration-500 ${
+        appState === 'COMPLETED' && finalResult
+          ? 'lg:grid-cols-1 lg:h-[400px] min-h-[280px]'
+          : 'lg:grid-cols-[1.1fr_0.9fr] lg:h-[640px] min-h-[320px]'
+      }`}>
 
         {/* LEFT COLUMN: Agent Trace */}
         <div className="flex flex-col bg-panel rounded-[24px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.02),0_12px_40px_rgba(0,0,0,0.04)] border border-neutral-100 dark:border-neutral-800/50 h-full relative">
@@ -844,6 +854,7 @@ export default function HomeView() {
         </div>
 
         {/* RIGHT COLUMN: Live View */}
+        {!(appState === 'COMPLETED' && finalResult) && (
         <div className="flex flex-col bg-panel rounded-[24px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.02),0_12px_40px_rgba(0,0,0,0.04)] border border-neutral-100 dark:border-neutral-800/50 h-full relative">
           <div className="flex items-center justify-between px-8 py-5 border-b border-neutral-100 dark:border-neutral-800/50 bg-white/50 dark:bg-black/20 backdrop-blur-md absolute top-0 left-0 right-0 z-10">
             <h2 className="text-[11px] font-bold text-neutral-400 uppercase tracking-[0.08em]">Live View</h2>
@@ -865,7 +876,7 @@ export default function HomeView() {
                     <p className="text-xs text-neutral-400 mt-1 leading-relaxed">The agent will browse listings and compare properties for you.</p>
                   </div>
                 </motion.div>
-              ) : appState === 'STARTING' && !latestScreenshot ? (
+              ) : (appState === 'STARTING' || appState === 'RUNNING') && !latestScreenshot && !isCompiling ? (
                 <motion.div key="starting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center text-emerald-600 gap-5">
                   <Loader2 className="w-10 h-10 animate-spin stroke-[1.5]" />
                   <p className="text-sm font-medium">Launching browser...</p>
@@ -876,6 +887,14 @@ export default function HomeView() {
                   <div>
                     <p className="text-base font-semibold text-rose-600 dark:text-rose-400 mb-2">Browser unavailable</p>
                     <p className="text-sm opacity-80 leading-relaxed">{errorMessage}</p>
+                  </div>
+                </motion.div>
+              ) : isCompiling ? (
+                <motion.div key="compiling" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center text-neutral-400 gap-4 text-center max-w-xs">
+                  <Loader2 className="w-10 h-10 animate-spin stroke-[1.5] text-emerald-500" />
+                  <div>
+                    <p className="text-sm font-semibold text-neutral-500">Compiling results...</p>
+                    <p className="text-xs text-neutral-400 mt-1 leading-relaxed">The agent is synthesizing the data.</p>
                   </div>
                 </motion.div>
               ) : latestScreenshot ? (
@@ -889,6 +908,7 @@ export default function HomeView() {
             </AnimatePresence>
           </div>
         </div>
+        )}
       </div>
 
       {/* ── FINAL RESULTS ── */}
